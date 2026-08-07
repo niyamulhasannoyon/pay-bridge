@@ -86,23 +86,31 @@ async function main() {
   const encUser = encryptDummy('sandbox_username');
   const encPass = encryptDummy('sandbox_password');
 
-  await prisma.bkashConfig.create({
-    data: {
-      mode: 'SANDBOX',
-      isSystemDefault: true,
-      appKey: 'sandbox_app_key',
-      appSecretEncrypted: encSecret.encrypted,
-      usernameEncrypted: encUser.encrypted,
-      passwordEncrypted: encPass.encrypted,
-      iv: encSecret.iv,
-      tag: encSecret.tag,
-      isActive: true,
-    },
+  const existingBkash = await prisma.bkashConfig.findFirst({
+    where: { isSystemDefault: true, mode: 'SANDBOX' }
   });
 
+  if (!existingBkash) {
+    await prisma.bkashConfig.create({
+      data: {
+        mode: 'SANDBOX',
+        isSystemDefault: true,
+        appKey: 'sandbox_app_key',
+        appSecretEncrypted: encSecret.encrypted,
+        usernameEncrypted: encUser.encrypted,
+        passwordEncrypted: encPass.encrypted,
+        iv: encSecret.iv,
+        tag: encSecret.tag,
+        isActive: true,
+      },
+    });
+  }
+
   // 5. Create Sample Completed Transaction
-  const trx = await prisma.transaction.create({
-    data: {
+  await prisma.transaction.upsert({
+    where: { transactionId: 'TRX-DEMO-1001' },
+    update: {},
+    create: {
       transactionId: 'TRX-DEMO-1001',
       merchantId,
       merchantInvoiceNo: 'INV-1001',

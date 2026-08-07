@@ -16,7 +16,7 @@ export default function LandingPage() {
           </div>
           <div>
             <span className="font-extrabold text-xl tracking-tight text-white block leading-none">PayBridge</span>
-            <span className="text-[10px] text-pink-400 font-mono">bKash SaaS Gateway</span>
+            <span className="text-[10px] text-pink-400 font-mono">Multi-Gateway SaaS</span>
           </div>
         </Link>
 
@@ -46,16 +46,16 @@ export default function LandingPage() {
       <section className="max-w-5xl mx-auto px-6 pt-16 pb-20 text-center relative z-10 space-y-6">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-pink-950/60 border border-pink-500/30 text-xs font-medium text-pink-300">
           <Zap className="w-4 h-4 text-pink-400" />
-          bKash Tokenized Checkout API v1.2 Wrapper & SaaS Engine
+          bKash, Nagad, Rocket & Bank Payment Gateway Wrapper
         </div>
 
         <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight leading-tight">
-          Accept bKash Payments Anywhere <br className="hidden sm:inline" />
-          <span className="gradient-text">In Seconds, Not Weeks</span>
+          Accept MFS & Bank Payments Anywhere <br className="hidden sm:inline" />
+          <span className="gradient-text">bKash, Nagad, Rocket & Bank Gateway</span>
         </h1>
 
         <p className="text-sm sm:text-base text-slate-400 max-w-2xl mx-auto leading-relaxed">
-          PayBridge is an enterprise multi-tenant gateway wrapper around the bKash Tokenized Checkout API. Use it internally for your own apps or offer bKash payment processing to external merchants with automated token caching, HMAC webhooks, and fee markups.
+          PayBridge is an enterprise multi-tenant payment gateway wrapper supporting <span className="text-pink-400 font-semibold">bKash</span>, <span className="text-orange-400 font-semibold">Nagad</span>, <span className="text-purple-400 font-semibold">Rocket</span>, and upcoming <span className="text-cyan-400 font-semibold">Bank Transfers</span>. Use it for your own apps or offer multi-channel payment processing with automated token caching, HMAC webhooks, and fee markups.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">

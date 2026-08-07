@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ShieldCheck, Lock, CreditCard, ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
+import { ShieldCheck, Lock, CreditCard, ArrowRight, CheckCircle2, AlertCircle, Building2 } from 'lucide-react';
 
 interface TransactionData {
   transactionId: string;
@@ -48,7 +48,7 @@ export default function CheckoutClient({ transaction }: { transaction: Transacti
       <div className="text-center mb-6">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/80 border border-slate-800 text-xs text-slate-400 mb-3">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          Secured by <span className="text-white font-semibold">PayBridge</span> Gateway
+          Secured by <span className="text-white font-semibold">PayBridge</span> Multi-Gateway
         </div>
         <h1 className="text-xl font-bold text-slate-100">{transaction.merchantName}</h1>
         <p className="text-xs text-slate-400 mt-0.5">Invoice #{transaction.merchantInvoiceNo}</p>
@@ -99,7 +99,7 @@ export default function CheckoutClient({ transaction }: { transaction: Transacti
         ) : (
           <div className="mt-5 space-y-4">
             <div className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center justify-between">
-              <span>Select MFS Payment Wallet</span>
+              <span>Select Payment Method</span>
               <span className="text-[10px] text-pink-400 font-mono">Multi-Channel Gateway</span>
             </div>
 
@@ -171,6 +171,24 @@ export default function CheckoutClient({ transaction }: { transaction: Transacti
                 </div>
                 <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${selectedProvider === 'ROCKET' ? 'border-purple-500' : 'border-slate-600'}`}>
                   {selectedProvider === 'ROCKET' && <div className="w-2 h-2 rounded-full bg-purple-500" />}
+                </div>
+              </div>
+
+              {/* Bank Transfer / Cards (Coming Soon) */}
+              <div className="p-3.5 rounded-xl border bg-slate-900/20 border-slate-800/60 opacity-80 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-cyan-900 to-blue-900 flex items-center justify-center font-bold text-white text-xs shadow-sm">
+                    <Building2 className="w-4 h-4 text-cyan-400" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-xs font-bold text-slate-300">Bank & Card Transfer</h4>
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800/80">
+                        Coming Soon (শীঘ্রই আসছে)
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-500">City Bank, EBL, Brac & Cards</p>
+                  </div>
                 </div>
               </div>
             </div>
