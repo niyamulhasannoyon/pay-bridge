@@ -39,13 +39,31 @@ export async function GET(req: NextRequest) {
       return NextResponse.redirect(`${baseUrl}/login?error=Email not provided by Google`);
     }
 
-    // 3. Check if user already exists or create new user + merchant profile
+    // 3. Determine role based on email address
+    const normalizedEmail = email.toLowerCase().trim();
+    let targetRole: 'SUPER_ADMIN' | 'ADMIN' | 'MERCHANT' = 'MERCHANT';
+    if (normalizedEmail === 'niyamulhasanbd@gmail.com') {
+      targetRole = 'SUPER_ADMIN';
+    } else if (normalizedEmail === 'niyamulhasan1089@gmail.com') {
+      targetRole = 'ADMIN';
+    }
+
+    // 4. Check if user already exists or create new user + merchant profile
     let user = await prisma.user.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
       include: { merchant: true },
     });
 
-    if (!user) {
+    if (user) {
+      // Ensure admin roles match if email is super admin or admin
+      if (user.role !== targetRole && (targetRole === 'SUPER_ADMIN' || targetRole === 'ADMIN')) {
+        user = await prisma.user.update({
+          where: { id: user.id },
+          data: { role: targetRole },
+          include: { merchant: true },
+        });
+      }
+    } else {
       const dummyPassword = await bcrypt.hash(crypto.randomBytes(16).toString('hex'), 10);
       const businessName = `${name}'s Business`;
       const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + Math.floor(100 + Math.random() * 900);
@@ -54,9 +72,9 @@ export async function GET(req: NextRequest) {
       user = await prisma.user.create({
         data: {
           name: name || 'Google User',
-          email,
+          email: normalizedEmail,
           passwordHash: dummyPassword,
-          role: 'MERCHANT',
+          role: targetRole,
           merchant: {
             create: {
               businessName,

@@ -21,37 +21,21 @@ function hashKey(secret: string) {
 async function main() {
   console.log('Seeding PayBridge Database...');
 
-  // 1. Create Super Admin User
-  const adminPassword = await bcrypt.hash('admin12345', 10);
-  const admin = await prisma.user.upsert({
-    where: { email: 'admin@paybridge.io' },
-    update: {},
+  // 1. Create Super Admin User (niyamulhasanbd@gmail.com)
+  const superAdminPassword = await bcrypt.hash(crypto.randomBytes(16).toString('hex'), 10);
+  const superAdmin = await prisma.user.upsert({
+    where: { email: 'niyamulhasanbd@gmail.com' },
+    update: { role: 'SUPER_ADMIN' },
     create: {
-      name: 'PayBridge Administrator',
-      email: 'admin@paybridge.io',
-      passwordHash: adminPassword,
+      name: 'Niyamul Hasan (Super Admin)',
+      email: 'niyamulhasanbd@gmail.com',
+      passwordHash: superAdminPassword,
       role: 'SUPER_ADMIN',
-    },
-  });
-
-  // 2. Create Demo Sub-Merchant
-  const merchantPassword = await bcrypt.hash('merchant12345', 10);
-  const merchantUser = await prisma.user.upsert({
-    where: { email: 'merchant@acme.com' },
-    update: {},
-    create: {
-      name: 'John Doe',
-      email: 'merchant@acme.com',
-      passwordHash: merchantPassword,
-      role: 'MERCHANT',
       merchant: {
         create: {
-          businessName: 'Acme E-Commerce Ltd',
-          slug: 'acme-ecommerce',
-          webhookUrl: 'https://webhook.site/paybridge-demo',
+          businessName: 'PayBridge Primary Admin',
+          slug: 'paybridge-superadmin',
           webhookSecret: `whsec_${crypto.randomBytes(24).toString('hex')}`,
-          feePercentage: 0.50,
-          fixedFee: 0.00,
           status: 'ACTIVE',
         },
       },
@@ -59,7 +43,29 @@ async function main() {
     include: { merchant: true },
   });
 
-  const merchantId = merchantUser.merchant!.id;
+  // 2. Create Admin User (niyamulhasan1089@gmail.com)
+  const adminPassword = await bcrypt.hash(crypto.randomBytes(16).toString('hex'), 10);
+  const adminUser = await prisma.user.upsert({
+    where: { email: 'niyamulhasan1089@gmail.com' },
+    update: { role: 'ADMIN' },
+    create: {
+      name: 'Niyamul Hasan (Admin)',
+      email: 'niyamulhasan1089@gmail.com',
+      passwordHash: adminPassword,
+      role: 'ADMIN',
+      merchant: {
+        create: {
+          businessName: 'PayBridge System Admin',
+          slug: 'paybridge-admin',
+          webhookSecret: `whsec_${crypto.randomBytes(24).toString('hex')}`,
+          status: 'ACTIVE',
+        },
+      },
+    },
+    include: { merchant: true },
+  });
+
+  const merchantId = superAdmin.merchant!.id;
 
   // 3. Create Demo API Keys
   const testKeySecret = 'pb_test_demo_secret_key_1234567890abcdef';
@@ -114,8 +120,8 @@ async function main() {
   });
 
   console.log('Seeding completed successfully!');
-  console.log('Admin login: admin@paybridge.io / admin12345');
-  console.log('Merchant login: merchant@acme.com / merchant12345');
+  console.log('Super Admin: niyamulhasanbd@gmail.com');
+  console.log('Admin: niyamulhasan1089@gmail.com');
 }
 
 main()
