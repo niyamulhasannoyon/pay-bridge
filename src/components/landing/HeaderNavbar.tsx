@@ -12,8 +12,8 @@ export default function HeaderNavbar() {
       {/* Brand & Live Status */}
       <div className="flex items-center gap-6">
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-600 via-rose-500 to-indigo-600 flex items-center justify-center font-bold text-white shadow-xl glow-bkash group-hover:scale-105 transition-transform">
-            <Zap className="w-5 h-5 fill-white" />
+          <div className="w-10 h-10 rounded-2xl overflow-hidden bg-slate-900 border border-pink-500/30 flex items-center justify-center shadow-xl glow-bkash group-hover:scale-105 transition-transform shrink-0">
+            <img src="/logo.png" alt="PayBridge Logo" className="w-full h-full object-cover" />
           </div>
           <div>
             <span className="font-extrabold text-xl tracking-tight text-white block leading-none">PayBridge</span>
