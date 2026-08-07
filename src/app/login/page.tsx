@@ -27,7 +27,8 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (data.success) {
-        router.push('/dashboard');
+        const redirectUrl = (data.user?.role === 'SUPER_ADMIN' || data.user?.role === 'ADMIN') ? '/admin' : '/dashboard';
+        router.push(redirectUrl);
         router.refresh();
       } else {
         setError(data.error || 'Login failed.');

@@ -112,7 +112,8 @@ export async function GET(req: NextRequest) {
       merchantId: user.merchant?.id,
     });
 
-    const response = NextResponse.redirect(`${baseUrl}/dashboard`);
+    const targetPath = (user.role === 'SUPER_ADMIN' || user.role === 'ADMIN') ? '/admin' : '/dashboard';
+    const response = NextResponse.redirect(`${baseUrl}${targetPath}`);
     response.cookies.set('paybridge_session', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
