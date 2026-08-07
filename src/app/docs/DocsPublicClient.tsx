@@ -95,7 +95,7 @@ if (data.success) {
               className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-pink-400 text-xs font-bold border border-pink-500/30 flex items-center gap-2"
             >
               {user.avatarUrl ? (
-                <img src={user.avatarUrl} alt={user.name} className="w-5 h-5 rounded-full object-cover" />
+                <img src={user.avatarUrl} alt={user.name} referrerPolicy="no-referrer" className="w-5 h-5 rounded-full object-cover" />
               ) : (
                 <User className="w-4 h-4" />
               )}

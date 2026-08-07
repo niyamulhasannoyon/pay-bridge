@@ -194,6 +194,7 @@ export default function MerchantsClient({ user }: { user: UserSessionPayload }) 
                         <img
                           src={m.user.avatarUrl}
                           alt={m.businessName}
+                          referrerPolicy="no-referrer"
                           className="w-9 h-9 rounded-full border border-pink-500/40 object-cover shadow-sm"
                         />
                       ) : (

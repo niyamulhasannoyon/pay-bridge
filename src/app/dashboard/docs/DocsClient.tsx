@@ -85,6 +85,7 @@ if (data.success) {
               <img
                 src={user.avatarUrl}
                 alt={user.name}
+                referrerPolicy="no-referrer"
                 className="w-12 h-12 rounded-full border-2 border-pink-500/60 object-cover shadow-md"
               />
             ) : (
@@ -227,7 +228,7 @@ if (data.success) {
                 </p>
                 <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-950 border border-slate-800">
                   {user.avatarUrl ? (
-                    <img src={user.avatarUrl} alt={user.name} className="w-10 h-10 rounded-full border border-pink-500" />
+                    <img src={user.avatarUrl} alt={user.name} referrerPolicy="no-referrer" className="w-10 h-10 rounded-full border border-pink-500" />
                   ) : (
                     <div className="w-10 h-10 rounded-full bg-pink-600 flex items-center justify-center font-bold text-white">
                       {user.name.charAt(0)}

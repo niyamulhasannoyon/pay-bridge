@@ -95,6 +95,7 @@ export default function AdminSidebar({ user }: { user: UserSessionPayload }) {
             <img
               src={user.avatarUrl}
               alt={user.name}
+              referrerPolicy="no-referrer"
               className="w-9 h-9 rounded-full border-2 border-rose-500/50 object-cover shrink-0 shadow-md"
             />
           ) : (
