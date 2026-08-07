@@ -8,6 +8,7 @@ export interface UserSessionPayload {
   userId: string;
   email: string;
   name: string;
+  avatarUrl?: string | null;
   role: 'SUPER_ADMIN' | 'ADMIN' | 'MERCHANT';
   merchantId?: string;
 }

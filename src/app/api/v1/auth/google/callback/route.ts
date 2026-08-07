@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
       headers: { Authorization: `Bearer ${access_token}` },
     });
 
-    const { email, name } = userRes.data;
+    const { email, name, picture } = userRes.data;
 
     if (!email) {
       return NextResponse.redirect(`${baseUrl}/login?error=Email not provided by Google`);
@@ -55,14 +55,15 @@ export async function GET(req: NextRequest) {
     });
 
     if (user) {
-      // Ensure admin roles match if email is super admin or admin
-      if (user.role !== targetRole && (targetRole === 'SUPER_ADMIN' || targetRole === 'ADMIN')) {
-        user = await prisma.user.update({
-          where: { id: user.id },
-          data: { role: targetRole },
-          include: { merchant: true },
-        });
-      }
+      // Update role and avatarUrl if needed
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          role: (user.role !== targetRole && (targetRole === 'SUPER_ADMIN' || targetRole === 'ADMIN')) ? targetRole : user.role,
+          avatarUrl: picture || user.avatarUrl,
+        },
+        include: { merchant: true },
+      });
     } else {
       const dummyPassword = await bcrypt.hash(crypto.randomBytes(16).toString('hex'), 10);
       const businessName = `${name}'s Business`;
@@ -73,6 +74,7 @@ export async function GET(req: NextRequest) {
         data: {
           name: name || 'Google User',
           email: normalizedEmail,
+          avatarUrl: picture || null,
           passwordHash: dummyPassword,
           role: targetRole,
           merchant: {
@@ -105,6 +107,7 @@ export async function GET(req: NextRequest) {
       userId: user.id,
       email: user.email,
       name: user.name,
+      avatarUrl: user.avatarUrl,
       role: user.role,
       merchantId: user.merchant?.id,
     });

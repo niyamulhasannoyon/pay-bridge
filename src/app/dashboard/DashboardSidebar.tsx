@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, KeyRound, Webhook, CreditCard, Shield, LogOut, ExternalLink, Zap } from 'lucide-react';
+import { LayoutDashboard, KeyRound, Webhook, CreditCard, Shield, LogOut, Zap, BookOpen } from 'lucide-react';
 import { UserSessionPayload } from '@/lib/auth/jwt';
 
 export default function DashboardSidebar({ user }: { user: UserSessionPayload }) {
@@ -20,6 +20,7 @@ export default function DashboardSidebar({ user }: { user: UserSessionPayload })
     { label: 'API Credentials', href: '/dashboard/api-keys', icon: KeyRound },
     { label: 'Webhooks & Test', href: '/dashboard/webhooks', icon: Webhook },
     { label: 'Transactions Log', href: '/dashboard/transactions', icon: CreditCard },
+    { label: 'Documentation (বাংলা)', href: '/dashboard/docs', icon: BookOpen },
   ];
 
   if (user.role === 'SUPER_ADMIN' || user.role === 'ADMIN') {
@@ -68,14 +69,25 @@ export default function DashboardSidebar({ user }: { user: UserSessionPayload })
 
       {/* Footer Profile & Logout */}
       <div className="p-4 border-t border-slate-800/80 space-y-3">
-        <div className="flex items-center justify-between px-2">
-          <div className="truncate">
+        <div className="flex items-center gap-3 px-1">
+          {user.avatarUrl ? (
+            <img
+              src={user.avatarUrl}
+              alt={user.name}
+              className="w-9 h-9 rounded-full border border-pink-500/40 object-cover shrink-0 shadow-md"
+            />
+          ) : (
+            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-pink-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shrink-0 border border-pink-500/30">
+              {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+            </div>
+          )}
+          <div className="truncate flex-1 min-w-0">
             <p className="text-xs font-bold text-slate-200 truncate">{user.name}</p>
-            <p className="text-[11px] text-slate-400 truncate">{user.email}</p>
+            <p className="text-[10px] text-slate-400 truncate">{user.email}</p>
+            <span className="inline-block mt-0.5 px-2 py-0.5 rounded text-[9px] font-bold bg-pink-500/20 text-pink-300 border border-pink-500/30 uppercase">
+              {user.role}
+            </span>
           </div>
-          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-pink-500/20 text-pink-300 border border-pink-500/30 uppercase">
-            {user.role}
-          </span>
         </div>
 
         <button
