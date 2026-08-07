@@ -21,7 +21,8 @@ import {
 import { UserSessionPayload } from '@/lib/auth/jwt';
 
 export default function DocsPublicClient({ user }: { user: UserSessionPayload | null }) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'auth' | 'api' | 'webhooks' | 'admin'>('overview');
+  const [activeTab, setActiveTab] = useState<'quickstart' | 'overview' | 'auth' | 'api' | 'webhooks' | 'admin'>('quickstart');
+  const [selectedLang, setSelectedLang] = useState<'html' | 'php' | 'python' | 'node' | 'curl'>('html');
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   const copyToClipboard = (text: string, index: number) => {
@@ -29,6 +30,139 @@ export default function DocsPublicClient({ user }: { user: UserSessionPayload | 
     setCopiedIndex(index);
     setTimeout(() => setCopiedIndex(null), 2000);
   };
+
+  const htmlExample = `<!-- ১. আপনার HTML পেজে এই বাটনটি বসান -->
+<button id="paybridge-btn" onclick="payWithPayBridge()" style="background: linear-gradient(135deg, #e2136e, #8b5cf6); color: white; padding: 14px 28px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 15px; box-shadow: 0 4px 15px rgba(226, 19, 110, 0.4);">
+  💳 bKash / Nagad / Rocket দিয়ে পেমেন্ট করুন
+</button>
+
+<!-- ২. এই স্ক্রিপ্টটি আপনার পেজের নিচে বসান -->
+<script>
+async function payWithPayBridge() {
+  const btn = document.getElementById('paybridge-btn');
+  btn.innerText = 'পেমেন্ট গেটওয়েতে রিডাইরেক্ট হচ্ছে...';
+  btn.disabled = true;
+
+  try {
+    const response = await fetch('https://paybridge-official.vercel.app/api/v1/payments/create', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer YOUR_MERCHANT_API_KEY', // আপনার ড্যাশবোর্ডের API Key
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        merchantInvoiceNo: 'INV-' + Date.now(), // ইউনিক ইনভয়েস আইডি
+        amount: 500.00, // টাকার পরিমাণ
+        currency: 'BDT',
+        customerMobile: '01700000000',
+        callbackUrl: window.location.origin + '/payment-success',
+        cancelUrl: window.location.origin + '/payment-cancel'
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success && data.checkoutUrl) {
+      // গ্রাহককে PayBridge Hosted Checkout UI-তে পাঠাবে
+      window.location.href = data.checkoutUrl;
+    } else {
+      alert('পেমেন্ট শুরু করতে ব্যর্থ হয়েছে: ' + (data.error || 'Unknown Error'));
+      btn.innerText = '💳 bKash / Nagad / Rocket দিয়ে পেমেন্ট করুন';
+      btn.disabled = false;
+    }
+  } catch (err) {
+    alert('নেটওয়ার্ক কানেকশনে সমস্যা! আবার চেষ্টা করুন।');
+    btn.innerText = '💳 bKash / Nagad / Rocket দিয়ে পেমেন্ট করুন';
+    btn.disabled = false;
+  }
+}
+</script>`;
+
+  const phpExample = `<?php
+// PayBridge Payment Initiation in PHP / Laravel / WordPress
+$apiKey = "YOUR_MERCHANT_API_KEY";
+$url = "https://paybridge-official.vercel.app/api/v1/payments/create";
+
+$payload = json_encode([
+    "merchantInvoiceNo" => "INV-" . time(),
+    "amount" => 1250.00,
+    "currency" => "BDT",
+    "customerMobile" => "01700000000",
+    "callbackUrl" => "https://yourdomain.com/payment/callback.php",
+    "cancelUrl" => "https://yourdomain.com/payment/cancel.php"
+]);
+
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    "Authorization: Bearer " . $apiKey,
+    "Content-Type: application/json"
+]);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+$data = json_decode($response, true);
+
+if (isset($data['success']) && $data['success']) {
+    // Redirect Customer to PayBridge Checkout URL
+    header("Location: " . $data['checkoutUrl']);
+    exit();
+} else {
+    echo "Payment Failed: " . ($data['error'] ?? 'Error');
+}
+?>`;
+
+  const pythonExample = `import requests
+
+API_KEY = "YOUR_MERCHANT_API_KEY"
+URL = "https://paybridge-official.vercel.app/api/v1/payments/create"
+
+payload = {
+    "merchantInvoiceNo": "INV-998811",
+    "amount": 750.00,
+    "currency": "BDT",
+    "customerMobile": "01700000000",
+    "callbackUrl": "https://yourdomain.com/payment/callback",
+    "cancelUrl": "https://yourdomain.com/payment/cancel"
+}
+
+headers = {
+    "Authorization": f"Bearer {API_KEY}",
+    "Content-Type": "application/json"
+}
+
+response = requests.post(URL, json=payload, headers=headers)
+data = response.json()
+
+if data.get("success"):
+    checkout_url = data.get("checkoutUrl")
+    print(f"Redirecting customer to: {checkout_url}")
+else:
+    print(f"Payment Error: {data.get('error')}")`;
+
+  const nodeExample = `const response = await fetch('https://paybridge-official.vercel.app/api/v1/payments/create', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_MERCHANT_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    merchantInvoiceNo: 'INV-' + Date.now(),
+    amount: 1500.00,
+    currency: 'BDT',
+    callbackUrl: 'https://yourdomain.com/payment/callback',
+    cancelUrl: 'https://yourdomain.com/payment/cancel'
+  })
+});
+
+const data = await response.json();
+if (data.success && data.checkoutUrl) {
+  // Redirect customer to PayBridge Hosted Checkout URL
+  window.location.href = data.checkoutUrl;
+}`;
 
   const curlExample = `curl -X POST https://paybridge-official.vercel.app/api/v1/payments/create \\
   -H "Authorization: Bearer YOUR_MERCHANT_API_KEY" \\
@@ -42,25 +176,6 @@ export default function DocsPublicClient({ user }: { user: UserSessionPayload | 
     "callbackUrl": "https://yourdomain.com/payment/callback",
     "cancelUrl": "https://yourdomain.com/payment/cancel"
   }'`;
-
-  const jsExample = `const response = await fetch('https://paybridge-official.vercel.app/api/v1/payments/create', {
-  method: 'POST',
-  headers: {
-    'Authorization': 'Bearer YOUR_MERCHANT_API_KEY',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    merchantInvoiceNo: 'INV-889911',
-    amount: 500.00,
-    callbackUrl: 'https://yourdomain.com/bkash/callback'
-  })
-});
-
-const data = await response.json();
-if (data.success) {
-  // Redirect Customer to PayBridge Checkout UI
-  window.location.href = data.checkoutUrl;
-}`;
 
   return (
     <div className="min-h-screen bg-[#070a12] text-slate-100 relative font-sans overflow-x-hidden">
@@ -126,16 +241,17 @@ if (data.success) {
             <span>PayBridge Official Documentation (বাংলা)</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            bKash Payment Gateway Integration Guide
+            Multi-Gateway Payment Integration Guide
           </h1>
           <p className="text-sm text-slate-400 mt-2 max-w-3xl leading-relaxed">
-            PayBridge প্ল্যাটফর্মের সম্পূর্ণ সার্বজনীন কারিগরি নির্দেশিকা। যেকানো সাব-মার্চেন্ট, ডেভলপার বা ভিজিটর এখান থেকে bKash Tokenized Checkout API ইন্টিগ্রেশন, ওয়েবহুক ভ্যালিডেশন এবং সিকিউরিটি আর্কিটেকচারের বিস্তারিত জানতে পারবেন।
+            ওয়েবসাইটে ১ মিনিটে bKash, Nagad ও Rocket পেমেন্ট যুক্ত করার সহজ গাইড এবং API ডকুমেন্টেশন।
           </p>
         </div>
 
         {/* Navigation Tabs */}
         <div className="flex items-center gap-2 border-b border-slate-800 pb-3 overflow-x-auto scrollbar-none">
           {[
+            { id: 'quickstart', label: '⚡ ৩ ধাপে ১ মিনিটের ইন্টিগ্রেশন', icon: Zap },
             { id: 'overview', label: '১. সিস্টেম আর্কিটেকচার', icon: BookOpen },
             { id: 'auth', label: '২. অথেন্টিকেশন ও প্রোফাইল', icon: UserCheck },
             { id: 'api', label: '৩. API পেমেন্ট ইন্টিগ্রেশন', icon: Code2 },
@@ -163,6 +279,120 @@ if (data.success) {
 
         {/* Tab Content Areas */}
         <div className="space-y-6">
+          {/* TAB 0: QUICKSTART */}
+          {activeTab === 'quickstart' && (
+            <div className="space-y-6">
+              <div className="glass-panel p-6 sm:p-8 rounded-2xl border border-slate-800 space-y-6">
+                <div>
+                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                    <Zap className="w-6 h-6 text-pink-400" />
+                    <span>ওয়েবসাইটে ৩টি সহজ ধাপে পেমেন্ট গেটওয়ে যুক্ত করুন</span>
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-400 mt-1">
+                    কোনো জটিল কোডিং ছাড়াই ১ মিনিটে আপনার যেকোনো ওয়েবসাইট (HTML, PHP, Node.js, Python বা WordPress)-এ bKash, Nagad & Rocket পেমেন্ট গ্রহণ শুরু করুন।
+                  </p>
+                </div>
+
+                {/* 3 Step Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                  <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-2">
+                    <div className="w-8 h-8 rounded-xl bg-pink-500/20 text-pink-400 font-extrabold flex items-center justify-center text-xs">
+                      ১
+                    </div>
+                    <h3 className="text-sm font-bold text-white">API Key সংগ্রহ করুন</h3>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      ড্যাশবোর্ডের <a href="/dashboard/api-keys" className="text-pink-400 underline font-semibold">API Keys</a> পেজ থেকে আপনার সিকিউর Bearer Token কপি করুন।
+                    </p>
+                  </div>
+
+                  <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-2">
+                    <div className="w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 font-extrabold flex items-center justify-center text-xs">
+                      ২
+                    </div>
+                    <h3 className="text-sm font-bold text-white">বাটন কোড কপি-পেস্ট করুন</h3>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      নিচে দেওয়া আপনার পছন্দের প্রোগ্রামিং ল্যাঙ্গুয়েজের ১-ক্লিক কোডটি আপনার পেজে বসিয়ে দিন।
+                    </p>
+                  </div>
+
+                  <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-2">
+                    <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 font-extrabold flex items-center justify-center text-xs">
+                      ৩
+                    </div>
+                    <h3 className="text-sm font-bold text-white">পেমেন্ট গ্রহণ শুরু করুন</h3>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      গ্রাহক আপনার সাইটের বাটনে ক্লিক করলে সরাসরি bKash / Nagad / Rocket চেকআউট পেজ দেখতে পাবে।
+                    </p>
+                  </div>
+                </div>
+
+                {/* Language Selector Bar */}
+                <div className="pt-4 border-t border-slate-800 space-y-4">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                      ল্যাঙ্গুয়েজ নির্বাচন করুন (Select Language):
+                    </span>
+                    <div className="flex items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-800">
+                      {[
+                        { id: 'html', label: '🌐 HTML / JS' },
+                        { id: 'php', label: '🐘 PHP / WordPress' },
+                        { id: 'python', label: '🐍 Python' },
+                        { id: 'node', label: '🚀 Node.js' },
+                        { id: 'curl', label: '💻 cURL' },
+                      ].map((lang) => (
+                        <button
+                          key={lang.id}
+                          onClick={() => setSelectedLang(lang.id as any)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                            selectedLang === lang.id
+                              ? 'bg-pink-600 text-white shadow-md'
+                              : 'text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          {lang.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Code Block Container */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs text-slate-400">
+                      <span className="font-mono text-pink-400 font-bold uppercase">{selectedLang} Integration Code</span>
+                      <button
+                        onClick={() => {
+                          const code =
+                            selectedLang === 'html'
+                              ? htmlExample
+                              : selectedLang === 'php'
+                              ? phpExample
+                              : selectedLang === 'python'
+                              ? pythonExample
+                              : selectedLang === 'node'
+                              ? nodeExample
+                              : curlExample;
+                          copyToClipboard(code, 999);
+                        }}
+                        className="flex items-center gap-1 text-pink-400 hover:text-pink-300 text-xs font-bold px-2.5 py-1 rounded bg-pink-500/10 border border-pink-500/30"
+                      >
+                        {copiedIndex === 999 ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                        <span>{copiedIndex === 999 ? 'Copied Code!' : '1-Click Copy Code'}</span>
+                      </button>
+                    </div>
+
+                    <pre className="p-5 rounded-2xl bg-slate-950 text-slate-200 text-xs font-mono overflow-x-auto border border-slate-800 leading-relaxed max-h-[450px]">
+                      {selectedLang === 'html' && htmlExample}
+                      {selectedLang === 'php' && phpExample}
+                      {selectedLang === 'python' && pythonExample}
+                      {selectedLang === 'node' && nodeExample}
+                      {selectedLang === 'curl' && curlExample}
+                    </pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* TAB 1: OVERVIEW */}
           {activeTab === 'overview' && (
             <div className="space-y-6">
@@ -297,7 +527,7 @@ if (data.success) {
                   <div className="flex items-center justify-between text-xs text-slate-400">
                     <span className="font-mono font-bold">JavaScript Node.js / Browser Example</span>
                     <button
-                      onClick={() => copyToClipboard(jsExample, 2)}
+                      onClick={() => copyToClipboard(nodeExample, 2)}
                       className="flex items-center gap-1 text-pink-400 hover:text-pink-300 text-xs font-bold"
                     >
                       {copiedIndex === 2 ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
@@ -305,7 +535,7 @@ if (data.success) {
                     </button>
                   </div>
                   <pre className="p-4 sm:p-5 rounded-2xl bg-slate-950 text-slate-200 text-xs font-mono overflow-x-auto border border-slate-800 leading-relaxed">
-                    {jsExample}
+                    {nodeExample}
                   </pre>
                 </div>
               </div>
