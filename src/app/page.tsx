@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Zap, ShieldCheck, KeyRound, Webhook, CreditCard, ArrowRight, Code2, Server, Cpu, CheckCircle } from 'lucide-react';
+import { Zap, ShieldCheck, KeyRound, Webhook, CreditCard, ArrowRight, Code2, Server, Cpu, CheckCircle, BookOpen } from 'lucide-react';
 
 export default function LandingPage() {
   return (
@@ -21,6 +21,14 @@ export default function LandingPage() {
         </Link>
 
         <div className="flex items-center gap-4">
+          <Link
+            href="/docs"
+            className="text-xs font-bold text-pink-400 hover:text-pink-300 transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-pink-500/10 border border-pink-500/30"
+          >
+            <BookOpen className="w-3.5 h-3.5 text-pink-400" />
+            <span>Documentation (বাংলা)</span>
+          </Link>
+
           <Link href="/login" className="text-xs font-semibold text-slate-300 hover:text-white transition-colors">
             Sign In
           </Link>
@@ -57,6 +65,13 @@ export default function LandingPage() {
           >
             <span>Register Merchant Account</span>
             <ArrowRight className="w-4 h-4" />
+          </Link>
+          <Link
+            href="/docs"
+            className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-pink-300 font-semibold text-sm border border-pink-500/30 flex items-center justify-center gap-2 transition-all"
+          >
+            <BookOpen className="w-4 h-4 text-pink-400" />
+            <span>Public Documentation (বাংলা)</span>
           </Link>
           <Link
             href="/login"
@@ -118,21 +133,21 @@ export default function LandingPage() {
 
           <div className="p-4 rounded-xl bg-slate-950 font-mono text-xs text-slate-300 overflow-x-auto border border-slate-800 leading-relaxed">
             <pre>{`// Initiate bKash Payment from Sub-Merchant App
-const res = await fetch('http://localhost:3000/api/v1/payments/create', {
+const res = await fetch('https://paybridge-official.vercel.app/api/v1/payments/create', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'x-api-key': 'pb_live_7x9f03a1...' // Merchant API Key Secret
+    'Authorization': 'Bearer YOUR_MERCHANT_API_KEY' // Found in Sub-Merchant Dashboard
   },
   body: JSON.stringify({
     amount: 1250.00,
-    merchantInvoiceNumber: 'ORD-98214',
-    callbackUrl: 'https://myshop.com/payment/callback'
+    merchantInvoiceNo: 'INV-2026-98214',
+    callbackUrl: 'https://yourdomain.com/payment/callback'
   })
 });
 
 const data = await res.json();
-// Hosted Checkout URL: data.paymentUrl`}</pre>
+// Redirect customer to PayBridge Hosted Checkout URL: data.checkoutUrl`}</pre>
           </div>
         </div>
       </section>
@@ -144,6 +159,7 @@ const data = await res.json();
           <span>PayBridge © {new Date().getFullYear()} - bKash Tokenized Checkout Wrapper Platform</span>
         </div>
         <div className="flex gap-4">
+          <Link href="/docs" className="hover:text-pink-300 text-pink-400 font-bold">Documentation (বাংলা)</Link>
           <Link href="/login" className="hover:text-slate-300">Sign In</Link>
           <Link href="/register" className="hover:text-slate-300">Register Merchant</Link>
         </div>

@@ -28,8 +28,8 @@ export default function DocsClient({ user }: { user: UserSessionPayload }) {
     setTimeout(() => setCopiedIndex(null), 2000);
   };
 
-  const curlExample = `curl -X POST https://paybridge.io/api/v1/payments/create \\
-  -H "Authorization: Bearer YOUR_SANDBOX_OR_LIVE_API_KEY" \\
+  const curlExample = `curl -X POST https://paybridge-official.vercel.app/api/v1/payments/create \\
+  -H "Authorization: Bearer YOUR_MERCHANT_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
     "merchantInvoiceNo": "INV-2026-001",
@@ -37,20 +37,20 @@ export default function DocsClient({ user }: { user: UserSessionPayload }) {
     "currency": "BDT",
     "intent": "sale",
     "customerMobile": "01700000000",
-    "callbackUrl": "https://yourwebsite.com/payment/callback",
-    "cancelUrl": "https://yourwebsite.com/payment/cancel"
+    "callbackUrl": "https://yourdomain.com/payment/callback",
+    "cancelUrl": "https://yourdomain.com/payment/cancel"
   }'`;
 
-  const jsExample = `const response = await fetch('https://paybridge.io/api/v1/payments/create', {
+  const jsExample = `const response = await fetch('https://paybridge-official.vercel.app/api/v1/payments/create', {
   method: 'POST',
   headers: {
-    'Authorization': 'Bearer pb_test_demo_secret_key_1234567890abcdef',
+    'Authorization': 'Bearer YOUR_MERCHANT_API_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
     merchantInvoiceNo: 'INV-889911',
     amount: 500.00,
-    callbackUrl: 'https://myshop.com/bkash/callback'
+    callbackUrl: 'https://yourdomain.com/bkash/callback'
   })
 });
 
